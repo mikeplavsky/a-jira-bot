@@ -5,6 +5,8 @@ const {
 const { 
     ComponentDialog,
     WaterfallDialog,
+    ChoicePrompt,
+    ChoiceFactory,
     TextPrompt,
     DialogTurnStatus,
     DialogSet } = require('botbuilder-dialogs');
@@ -22,15 +24,15 @@ class MainDlg extends ComponentDialog {
 
         this.addDialog( new WaterfallDialog( 'start',[
 
-            async (step) => {
-                return await step.prompt(
-                    'namePrompt',
-                    'What is your name?');
-            }
+            async (step) => await step.prompt(
+                    'productPrompt',{
+                    prompt: 'What is the product?',
+                    choices: ChoiceFactory.toChoices(
+                        ['RMAD', 'ODR'])})
 
         ]));
 
-        this.addDialog( new TextPrompt( 'namePrompt' ));
+        this.addDialog( new ChoicePrompt( 'productPrompt' ));
     }
 } 
 
