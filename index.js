@@ -7,7 +7,7 @@ dotenv.config({ path: ENV_FILE });
 const restify = require('restify');
 
 const { BotFrameworkAdapter } = require('botbuilder');
-const { EchoBot } = require('./bot');
+const { AJiraBot } = require('./bot');
 
 const server = restify.createServer();
 
@@ -28,7 +28,7 @@ const onTurnErrorHandler = async (context, error) => {
 };
 
 adapter.onTurnError = null;//onTurnErrorHandler;
-const myBot = new EchoBot();
+const myBot = new AJiraBot();
 
 server.post('/api/messages', (req, res) => {
     adapter.processActivity(req, res, async (context) => {

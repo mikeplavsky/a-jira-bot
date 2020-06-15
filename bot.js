@@ -15,8 +15,9 @@ const {
     MemoryStorage,
     ConversationState } = require('botbuilder-core');
 
-const state = (new ConversationState( 
-    new MemoryStorage())).createProperty('dialogState');
+const state = new ConversationState( 
+    new MemoryStorage());
+const dlg_state = state.createProperty('DialogState');
 
 class MainDlg extends ComponentDialog {
     constructor() {
@@ -24,11 +25,21 @@ class MainDlg extends ComponentDialog {
 
         this.addDialog( new WaterfallDialog( 'start',[
 
-            async (step) => await step.prompt(
+            async (step) => {
+
+                return await step.prompt(
                     'productPrompt',{
                     prompt: 'What is the product?',
                     choices: ChoiceFactory.toChoices(
-                        ['RMAD', 'ODR'])})
+                        ['RMAD', 'ODR'])});
+            },
+            
+            async (step) => {
+
+                console.log('Next step');
+                return await step.endDialog(step);
+
+            }            
 
         ]));
 
@@ -36,7 +47,16 @@ class MainDlg extends ComponentDialog {
     }
 } 
 
-class EchoBot extends ActivityHandler {
+class AJiraBot extends ActivityHandler {
+
+    async run(context) {
+        
+        console.log('running...');
+
+        await super.run(context);
+        await state.saveChanges(context, false);
+        
+    }
 
     constructor() {
 
@@ -45,17 +65,21 @@ class EchoBot extends ActivityHandler {
 
         this.onMessage( async (context, next) => {
 
-            const dlgSet = new DialogSet(state);
+            console.log('on message');
+
+            const dlgSet = new DialogSet(dlg_state);
             dlgSet.add(dlg);
 
             const ctxt = await dlgSet.createContext(context);
             const res = await ctxt.continueDialog();
 
-            console.log(res);
+            console.log(`from continue: ${res.status}`);
 
-            if (res.status == DialogTurnStatus.empty) {
+            if (res.status === DialogTurnStatus.empty) {
+
                const res1 = await ctxt.beginDialog(dlg.id);
-               console.log(res1);
+               console.log(`starting ${res1.status}`);
+
             }
 
             await next();
@@ -81,4 +105,4 @@ class EchoBot extends ActivityHandler {
     }
 }
 
-module.exports.EchoBot = EchoBot;
+module.exports.AJiraBot = AJiraBot;
