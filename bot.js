@@ -7,7 +7,6 @@ const {
     WaterfallDialog,
     ChoicePrompt,
     ChoiceFactory,
-    TextPrompt,
     DialogTurnStatus,
     DialogSet } = require('botbuilder-dialogs');
 
@@ -51,8 +50,6 @@ class AJiraBot extends ActivityHandler {
 
     async run(context) {
         
-        console.log('running...');
-
         await super.run(context);
         await state.saveChanges(context, false);
         

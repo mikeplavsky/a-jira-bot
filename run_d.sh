@@ -4,5 +4,5 @@ docker run -ti  \
     -p 3978:3978 \
     -p 9229:9229 \
     -w /a-jira-bot \
-    a-jira-bot bash
+    a-jira-bot sh
 
