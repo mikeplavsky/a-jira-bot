@@ -8,4 +8,4 @@ NAME="a-jira-bot"
 
 docker build -t $NAME .
 docker tag $NAME mikeplavsky/$NAME:${VERSION}
-docker push mikeplavsky/$NAME:${VERSION}
+#docker push mikeplavsky/$NAME:${VERSION}

@@ -17,5 +17,15 @@ COPY package.json .
 ENV VERSION=0.1
 RUN npm install 
 
+USER root
+
+RUN apk add openssh \
+     && echo "root:Docker!" | chpasswd 
+
+EXPOSE 8000 2222
+
 ADD . /a-jira-bot
-CMD ["npm","start"]
+COPY sshd_config /etc/ssh/
+RUN ssh-keygen -A
+
+CMD /a-jira-bot/start.sh 

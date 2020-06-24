@@ -18,13 +18,19 @@ const state = new ConversationState(
     new MemoryStorage());
 const dlg_state = state.createProperty('DialogState');
 
+const PRODUCT="product";
+
 class MainDlg extends ComponentDialog {
     constructor() {
         super('MainDlg');
 
+        this.product = state.createProperty(PRODUCT);
+
         this.addDialog( new WaterfallDialog( 'start',[
 
             async (step) => {
+
+                debugger;
 
                 return await step.prompt(
                     'productPrompt',{
@@ -34,10 +40,7 @@ class MainDlg extends ComponentDialog {
             },
             
             async (step) => {
-
-                console.log('Next step');
                 return await step.endDialog(step);
-
             }            
 
         ]));
@@ -62,21 +65,14 @@ class AJiraBot extends ActivityHandler {
 
         this.onMessage( async (context, next) => {
 
-            console.log('on message');
-
             const dlgSet = new DialogSet(dlg_state);
             dlgSet.add(dlg);
 
             const ctxt = await dlgSet.createContext(context);
             const res = await ctxt.continueDialog();
 
-            console.log(`from continue: ${res.status}`);
-
             if (res.status === DialogTurnStatus.empty) {
-
-               const res1 = await ctxt.beginDialog(dlg.id);
-               console.log(`starting ${res1.status}`);
-
+               await ctxt.beginDialog(dlg.id);
             }
 
             await next();
