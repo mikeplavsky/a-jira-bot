@@ -12,9 +12,10 @@ RUN chown -R bot:bot /a-jira-bot
 USER bot
 
 RUN npm install -g nodemon
-COPY package.json .
+ENV VERSION=0.2
 
-ENV VERSION=0.1
+COPY package.json .
 RUN npm install 
 
+ADD . /a-jira-bot
 CMD /a-jira-bot/start.sh 
